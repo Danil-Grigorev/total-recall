@@ -1,0 +1,12 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i python3 -p python3 (pkgs.callPackage ./whisper-faster.nix {})
+from faster_whisper import WhisperModel
+
+model_size = "distil-large-v3"
+
+model = WhisperModel(model_size, cpu_threads=24, num_workers=6)
+
+segments, info = model.transcribe("file.wav", beam_size=1, best_of=5, language='en', without_timestamps=True, vad_filter=True)
+
+for segment in segments:
+    print(segment.text)
